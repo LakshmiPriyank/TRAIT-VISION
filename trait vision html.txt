@@ -1,0 +1,330 @@
+templates - cart.html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Cart - Trait Vision</title>
+</head>
+<body>
+    <header>
+        <h1>Cart</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </header>
+    <div class="cart-container">
+        <h2>Your Cart</h2>
+        <div class="cart-item">
+            <p>Product 1</p>
+            <p>Quantity: 1</p>
+            <p>Price: 100</p>
+        </div>
+        <div class="cart-total">
+            <p>Total: $100</p>
+        </div>
+        <button>Proceed to Payment</button>
+    </div>
+</body>
+</html>
+
+index.html  
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Home - Trait Vision</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Trait Vision</h1>
+        <nav>
+            <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            
+            
+        </nav>
+    </header>
+    <main>
+        <h2>Products</h2>
+        <div class="product-list">
+            {% for product in products %}
+                <div class="product-item">
+                    <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.description }}</p>
+
+                    <p class="price">Price: {{ product.price }}</p>
+
+                    {% if is_seller %}
+                        <p>Remaining Time To Buy: {{ product.time_left }}</p>
+                    {% endif %}
+
+                    <li>
+                        <h2>{{ product.name }}</h2>
+                        
+
+                        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+                            <button type="submit">Add to Cart</button>
+                        </form>
+                    </li>
+                    <a href="{{ url_for('product', product_id=product.id) }}">Time Period</a>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>  
+
+login.html  
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Login - Trait Vision</title>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flashed-messages">
+                {% for category, message in messages %}
+                    <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <form name="loginForm" method="POST">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p><a href="{{ url_for('signup') }}">Create an account</a></p>
+        <p><a href="#">Forgot Password?</a></p>
+
+        
+
+    </div>
+</body>
+</html>  
+
+products.html 
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{{ product.name }} - Trait Vision</title>
+</head>
+<body>
+    <header>
+        <h1>Trait Vision</h1>
+        <nav>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            
+        </nav>
+    </header>
+    <main>
+        <h2>{{ product.name }}</h2>
+        <div class="product-item">
+            <a href="{{ url_for('product', product_id=product.id) }}">
+                <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+            </a>
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>Price: {{ product.price }}</p>
+            <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+                <button type="submit">Add to Cart</button>
+            </form>
+        </div>
+    </main>
+       
+
+seetings.html  
+
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Settings - Trait Vision</title>
+</head>
+<body>
+    <div class="settings-container">
+
+        <header>
+            <h1>Settings</h1>
+            <nav>
+                
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </header>
+        <main>
+            <h2>Account Settings</h2>
+            <input type="text" class="search-bar" placeholder="Search for a setting...">
+            <ul class="settings-options">
+                <li><a href="{{ url_for('account') }}">Account</a></li>
+                <li><a href="{{ url_for('help') }}">Help</a></li>
+                <li><a href="{{ url_for('privacy') }}">Privacy</a></li>
+                <li><a href="{{ url_for('cart_view') }}">Cart Items</a></li>
+                <li><a href="{{ url_for('theme') }}">Theme</a></li>
+                <li><a href="{{ url_for('language')}}">Language</a></li>
+                <li><a href="{{ url_for('about')}}">About</a></li>
+                <li><a href="{{ url_for('change password')}}">Change Password</a></li>
+                <li><a href="{{ url_for('privacy settings') }}">Privacy Settings</a></li>
+                <li><a href="{{ url_for('notification preferences') }}">Notification Preferences</a></li>
+            </ul>
+    
+        </main>
+    </div>
+</body>
+</html>  
+
+signup.html  
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Sign Up - Amazon Clone</title>
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Create Account</h2>
+        <form method="POST">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p><a href="{{ url_for('login') }}">Already have an account? Log in</a></p>
+    </div>
+</body>
+</html>  
+
+app.py  
+
+from flask import Flask, render_template, redirect, url_for, request, flash, session
+
+app = Flask(_name_)
+app.secret_key = 'supersecretkey'
+
+# Dummy database for users and products
+users = {}
+products = [
+    {'id': 1, 'name': 'Product 1', 'description' : "Sapota, also known as chikoo, is rich in dietary fiber, vitamins, and antioxidants, supporting digestion, boosting immunity, and promoting skin health.", 'price': 100, 'image': 'sapota.jpg'},
+    {'id': 2, 'name': 'Product 2', 'description': "Ridge gourd is high in fiber, vitamins, and minerals, promoting digestion, heart health, and weight management while being a great addition to a balanced diet.", 'price': 200, 'image': 'ridge gaurd.jpg'},
+    {'id': 3, 'name': 'Product 3', 'description': "Milk is rich in calcium, protein, and vitamins, promoting strong bones, muscle growth, heart health, and overall wellness. It's a hydrating, versatile choice for all ages.", 'price': 150, 'image': 'milk.jpg'}
+    
+]
+
+# Home route
+@app.route('/')
+def home():
+    if 'email' in session:
+        return render_template('index.html', products=products)
+    else:
+        flash("Please create an account before logging in.", "danger")
+        return redirect(url_for('login'))
+
+# Login route
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        if email in users and users[email] == password:
+            session['email'] = email
+            flash("Login successful!", "success")
+            return redirect(url_for('home'))
+        else:
+            flash("Please create an account before logging in.", "danger")
+            return redirect(url_for('login'))
+
+    return render_template('login.html')
+
+# Signup route
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        if email in users:
+            flash("User already exists! Please login.", "danger")
+            return redirect(url_for('login'))
+        
+        users[email] = password
+        session['email'] = email
+        flash("Account created successfully!", "success")
+        return redirect(url_for('login'))
+
+    return render_template('signup.html')
+
+# Logout route
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    flash("Logged out successfully!", "success")
+    return redirect(url_for('login'))
+
+# Cart route
+@app.route('/cart')
+def cart():
+    if 'email' not in session:  # Prevent access to cart if not logged in
+        flash("Please log in to view your cart.", "danger")
+        return redirect(url_for('login'))
+    return render_template('cart.html')
+    
+
+# Settings route
+@app.route('/settings')
+def settings():
+    if 'email' not in session:  # Prevent access to settings if not logged in
+        flash("Please log in to view settings.", "danger")
+        return redirect(url_for('login'))
+    return render_template('settings.html')
+    
+
+@app.route('/add_to_cart/<int:product_id>', methods=['POST'])
+def add_to_cart(product_id):
+    # Logic to add the product to the cart
+    # Example:
+    # cart.add(product_id)
+    if 'email' not in session:
+        flash("Please log in to add items to your cart.", "danger")
+        return redirect(url_for('login'))
+    # Logic to add the product to the cart can go here
+    return redirect(url_for('cart'))
+    
+
+@app.route('/product/<int:product_id>')
+def product(product_id):
+    # Logic to handle the product view
+
+    product = next((p for p in products if p['id'] == product_id), None)
+    if product:
+        #return render_template('products.html', product=product)
+        return "Product not found", 404
+    
+    return render_template('product.html', product_id=product_id) 
+
+if _name_ == '_main_':
+    app.run(debug=True) 
